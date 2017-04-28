@@ -28,6 +28,8 @@ def update_products_from_excel
         product.sync_product
         # define product's name
         product.name = hash[:name]
+        # define product's code
+        product.code = hash[:product_id]
         # add a product into html page
         page.add_product(product)
 

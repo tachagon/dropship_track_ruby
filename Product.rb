@@ -27,6 +27,7 @@ class Product
   # return true if sync successful
   # return false if anything else
   def sync_product
+    @last_sync = Time.now
     begin
       # OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
       page = Nokogiri::HTML(open(@url, :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE))
@@ -42,7 +43,6 @@ class Product
       @code = get_product_code(page)
       @name = get_product_name(page)
       @description = get_product_description(page)
-      @last_sync = Time.now
       @image = get_product_image(page)
 
       return true
