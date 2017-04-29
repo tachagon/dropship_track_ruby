@@ -1,3 +1,4 @@
+# import roo for work with Excel
 require "roo"
 
 require_relative "./Product"
