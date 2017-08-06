@@ -51,6 +51,7 @@ class Page
       color = 'black'
       color = 'green' if product.status == "in_stock"
       color = "red" if product.status == "out_stock"
+      color = 'orange' if product.status == "404 Not Found"
 
       row += '<tr>'
       row += "<td>#{index}</td>"
