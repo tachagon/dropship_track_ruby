@@ -45,24 +45,38 @@ class Page
     end
   end
 
+  def gen_row(product, index)
+    row = ''
+    color = 'black'
+    color = 'green' if product.status == "in_stock"
+    color = "red" if product.status == "out_stock"
+    color = 'orange' if product.status == "404 Not Found"
+
+    row += '<tr>'
+    row += "<td>#{index}</td>"
+    row += "<td><img src='#{product.image}' class='img-responsive' style='width: 50px;'></td>"
+    row += "<td>#{product.name}</td>"
+    row += "<td>#{product.code}</td>"
+    row += "<td>#{product.price}</td>"
+    row += "<td style='color:white; background-color:#{color};'>#{product.status}</td>"
+    row += "<td>#{product.last_sync}</td>"
+    row += "<td><a href='#{product.url}' target='_blank'>Link</a></td>" if product.class == Product
+    row += '</tr>'
+    return row
+  end
+
   def gen_table
     row = ''
     @products.each_with_index { |product, index|
-      color = 'black'
-      color = 'green' if product.status == "in_stock"
-      color = "red" if product.status == "out_stock"
-      color = 'orange' if product.status == "404 Not Found"
-
-      row += '<tr>'
-      row += "<td>#{index}</td>"
-      row += "<td><img src='#{product.image}' class='img-responsive' style='width: 50px;'></td>"
-      row += "<td>#{product.name}</td>"
-      row += "<td>#{product.code}</td>"
-      row += "<td>#{product.price}</td>"
-      row += "<td style='color:white; background-color:#{color};'>#{product.status}</td>"
-      row += "<td>#{product.last_sync}</td>"
-      row += "<td><a href='#{product.url}' target='_blank'>Link</a></td>"
-      row += '</tr>'
+      # generate row for show product
+      row += gen_row(product, index)
+      # if product have some subproducts
+      if !product.subproduct.empty?
+        product.subproduct.each { |subproduct|
+          # generate row for show subproduct
+          row += gen_row(subproduct, index)
+        }
+      end
     }
     @table = "
             <table class='table table-hover table-bordered'>

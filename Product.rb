@@ -6,7 +6,7 @@ require_relative "./Page"
 
 class Product
 
-  attr_accessor :url, :code, :name, :price, :status, :description, :last_sync, :image
+  attr_accessor :url, :code, :name, :price, :status, :description, :last_sync, :image, :subproduct
 
   def initialize(url)
     @url = url
@@ -18,9 +18,10 @@ class Product
     @description = ""
     @last_sync = ""
     @image = ""
+    @subproduct = []
 
     # sync product first time
-    self.sync_product
+    # self.sync_product
   end
 
   # sync product
@@ -36,6 +37,16 @@ class Product
       if page.css(".subproductItem").any?
         @price = -1.0
         @status = "superproduct"
+        # get html for all subproduct items
+        subproductItems = page.css(".subproductItem")
+        # reach each subproduct html
+        subproductItems.each do |subproduct|
+          # create new subproduct object
+          subproductObj = Subproduct.new(subproduct)
+          subproductObj.sync_product
+          # store subproduct data
+          @subproduct.push(subproductObj)
+        end
       else
         @price = get_product_price(page)
         @status = get_product_status(page)
@@ -96,6 +107,56 @@ class Product
     def get_product_image(page)
       image = page.css(".productPhoto .productImage")
       image = page.css(".subproductImage") if image.empty?
+      return image.attr("src").to_s
+    end
+
+end
+
+class Subproduct < Product
+
+  attr_accessor :subproductHtml, :code, :name, :price, :status, :last_sync, :image
+
+  def initialize(subproductHtml)
+    @subproductHtml = subproductHtml
+    @code = ""
+    @name = ""
+    @price = 0.0
+    @status = ""
+    @last_sync = ""
+    @image = ""
+  end
+
+  def sync_product
+    @code = get_product_code(@subproductHtml)
+    @name = get_product_name(@subproductHtml)
+    @price = get_product_price(@subproductHtml)
+    @status = get_product_status(@subproductHtml)
+    @last_sync = Time.now
+    @image = get_product_image(@subproductHtml)
+  end
+
+  private
+
+    def get_product_code(page)
+      code = page.css(".codeTR .bodyTD").text #if code.empty?
+      return code.empty? ? "Not have code" : code
+    end
+
+    def get_product_name(page)
+      return page.css(".subproductHeader .headerText").text
+    end
+
+    def get_product_status(page)
+      if page.css(".addCartArea .subadd2cart").any?
+        return "in_stock"
+      elsif page.css(".addCartArea .warningBox").any?
+        return "out_stock"
+      end
+      return "not_found"
+    end
+
+    def get_product_image(page)
+      image = page.css(".subproductImage")
       return image.attr("src").to_s
     end
 
