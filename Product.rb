@@ -72,7 +72,12 @@ class Product
 
     def get_product_price(page)
       cost_price = page.css(".priceTR .bodyTD").text
-      return cost_price.split(" ")[0].to_f
+      # get number of price with out "บาท"
+      cost_price.split(" ")[0]
+      # in case price greater than 1,000 => split with ","
+      # and then join for get pure number together
+      # and finally convert from String to Float
+      return cost_price.split(",").join.to_f
     end
 
     def get_product_status(page)
