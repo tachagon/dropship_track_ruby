@@ -19,12 +19,15 @@ def update_products_from_excel
     shopee_id: 'ps_product_id',
     product_id: 'ps_sku_ref_no_parent',
     name: 'ps_product_name',
-    price: 'ps_price',
+    price: 'ps_cost',
+    retailPrice: 'ps_price',
     url: 'ps_url'
     ) do |hash, index|
       if index >= 3
         # create a new Product
         product = Product.new(hash[:url])
+        # define product's retail price
+        product.retailPrice = hash[:retailPrice]
         # sync a product for get datas
         product.sync_product
         # define product's name

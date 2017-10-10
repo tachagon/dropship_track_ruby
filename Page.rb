@@ -58,6 +58,7 @@ class Page
     row += "<td>#{product.name}</td>"
     row += "<td>#{product.code}</td>"
     row += "<td>#{product.price}</td>"
+    row += "<td>#{product.retailPrice}</td>"
     row += "<td style='color:white; background-color:#{color};'>#{product.status}</td>"
     row += "<td>#{product.last_sync}</td>"
     row += "<td><a href='#{product.url}' target='_blank'>Link</a></td>" if product.class == Product
@@ -77,6 +78,8 @@ class Page
           row += gen_row(subproduct, index)
         }
       end
+      # generate empty row for seperate each product
+      row += "<tr><td colspan='9' style='background-color:black;'></td></tr>"
     }
     @table = "
             <table class='table table-hover table-bordered'>
@@ -89,7 +92,8 @@ class Page
                   <th>Image</th>
                   <th>Name</th>
                   <th>Code</th>
-                  <th>Price</th>
+                  <th>ราคาทุน</th>
+                  <th>ราคาขาย</th>
                   <th>Status</th>
                   <th>Last Sync</th>
                   <th>URL</th>

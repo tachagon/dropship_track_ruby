@@ -6,13 +6,14 @@ require_relative "./Page"
 
 class Product
 
-  attr_accessor :url, :code, :name, :price, :status, :description, :last_sync, :image, :subproduct
+  attr_accessor :url, :code, :name, :price, :retailPrice, :status, :description, :last_sync, :image, :subproduct
 
   def initialize(url)
     @url = url
     @code = ""
     @name = ""
     @price = 0.0
+    @retailPrice = 0.0
     # @superproduct = nil
     @status = ""
     @description = ""
@@ -44,6 +45,7 @@ class Product
           # create new subproduct object
           subproductObj = Subproduct.new(subproduct)
           subproductObj.sync_product
+          subproductObj.retailPrice = @retailPrice
           # store subproduct data
           @subproduct.push(subproductObj)
         end
@@ -114,13 +116,14 @@ end
 
 class Subproduct < Product
 
-  attr_accessor :subproductHtml, :code, :name, :price, :status, :last_sync, :image
+  attr_accessor :subproductHtml, :code, :name, :price, :retailPrice, :status, :last_sync, :image
 
   def initialize(subproductHtml)
     @subproductHtml = subproductHtml
     @code = ""
     @name = ""
     @price = 0.0
+    @retailPrice = 0.0
     @status = ""
     @last_sync = ""
     @image = ""
